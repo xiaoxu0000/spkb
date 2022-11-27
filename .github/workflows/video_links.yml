@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build video_pages
+name: Build video_link
 
 on:
   repository_dispatch:
@@ -65,8 +65,8 @@ jobs:
       run: |
         sudo cp video/* openwrt/ -r
         cd openwrt
-        sudo wget https://download.kstore.space/download/3524/spkb/album.csv
-        sudo python3 video_pages.py
+        sudo wget https://download.kstore.space/download/3524/spkb/video_pages.csv
+        sudo python3 video_links.py
         ls
 
     
@@ -75,20 +75,20 @@ jobs:
       run: |
         cd openwrt
         ls
-        sudo 7z a -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on video_pages.7z ./
+        sudo 7z a -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on video_links.7z ./
         ls
 
         # 查找firmware目录id
         firmware_dir_id=$(curl -X POST -d "path=spkb/"  https://api.kstore.space/api/v1/file/search/path?access_token=${{ secrets.KSTORE_TOKEN }} | jq ".data.id")
         echo $firmware_dir_id
 
-        #上传video_pages.csv文件，开启直链
-        upload_file_id=$(curl https://upload.kstore.space/upload/$firmware_dir_id?access_token=${{ secrets.KSTORE_TOKEN }} -F "file=@./video_pages.csv" | jq ".data.id")
+        #上传album.csv文件，开启直链
+        upload_file_id=$(curl https://upload.kstore.space/upload/$firmware_dir_id?access_token=${{ secrets.KSTORE_TOKEN }} -F "file=@./album.csv" | jq ".data.id")
         echo $upload_file_id
         curl -X POST -d "fileId=$upload_file_id&isDirect=1" https://api.kstore.space/api/v1/file/direct?access_token=${{ secrets.KSTORE_TOKEN }} | jq "."
 
-        #上传video_pages.7z文件，开启直链
-        upload_file_id=$(curl https://upload.kstore.space/upload/$firmware_dir_id?access_token=${{ secrets.KSTORE_TOKEN }} -F "file=@./video_pages.7z" | jq ".data.id")
+        #上传video_links.7z文件，开启直链
+        upload_file_id=$(curl https://upload.kstore.space/upload/$firmware_dir_id?access_token=${{ secrets.KSTORE_TOKEN }} -F "file=@./video_links.7z" | jq ".data.id")
         echo $upload_file_id
         curl -X POST -d "fileId=$upload_file_id&isDirect=1" https://api.kstore.space/api/v1/file/direct?access_token=${{ secrets.KSTORE_TOKEN }} | jq "."
 

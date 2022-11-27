@@ -9,6 +9,11 @@ from fake_useragent import UserAgent
 
 requests.packages.urllib3.disable_warnings()
 
+ua = UserAgent()
+headers = {
+    'User-Agent': ua.random,
+}
+
 LOG_PATH = '.'
 def log_config():
     # 创建输出目录
@@ -52,7 +57,7 @@ def read_csv(file_name):
 def web_requests(url):
     logging.info("requests: " + url)
     try:
-        data = requests.get(url, headers=UserAgent().random, verify=False, allow_redirects=True, stream=True)
+        data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
         return data.text
     except:
         logging.info("requests err: " + url)

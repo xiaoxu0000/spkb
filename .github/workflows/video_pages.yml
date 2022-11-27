@@ -94,6 +94,13 @@ jobs:
         echo $upload_file_id
         curl -X POST -d "fileId=$upload_file_id&isDirect=1" https://api.kstore.space/api/v1/file/direct?access_token=${{ secrets.KSTORE_TOKEN }} | jq "."
 
+    - name: Trigger video_links
+      run: |
+        curl -X POST https://api.github.com/repos/xiaoxu0000/spkb/actions/workflows/video_links.yml/dispatches \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+        -d '{"ref":"master"}'
+
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:

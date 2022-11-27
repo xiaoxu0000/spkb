@@ -1,36 +1,12 @@
 # coding=utf-8
 #!/usr/bin/python
 
-import requests
-import os
 from bs4 import BeautifulSoup
-import sys
 import random
 import time
 import json
 import logging
-import csv
-
-requests.packages.urllib3.disable_warnings()
-
-# 越多越好
-meizi_headers = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
-    "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/537.75.14",
-    "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)",
-    'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
-    'Opera/9.25 (Windows NT 5.1; U; en)',
-    'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
-    'Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Kubuntu)',
-    'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.12) Gecko/20070731 Ubuntu/dapper-security Firefox/1.5.0.12',
-    'Lynx/2.8.5rel.1 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/1.2.9',
-    "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 (KHTML, like Gecko) Ubuntu/11.04 Chromium/16.0.912.77 Chrome/16.0.912.77 Safari/535.7",
-    "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:10.0) Gecko/20100101 Firefox/10.0",
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'
-]
+from publib import *
 
 spkb = "https://spankbang.com"
 web_info_path = "web_info.csv"
@@ -39,62 +15,6 @@ exist_id_path = "exist_id.csv"
 related_album_path = "album.csv"
 related_album_full_path = "album_full.csv"
 favorites_path = "favorites.csv"
-
-global headers
-headers = {
-    "User-Agent": random.choice(meizi_headers),
-}
-
-LOG_PATH = '.'
-
-
-def log_config():
-    # 创建输出目录
-    if(os.path.exists(LOG_PATH) != True):
-        os.makedirs(LOG_PATH)
-
-    # 配置log
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(name)-6s %(levelname)-8s %(message)s',
-                        datefmt='%m/%d/%Y %H:%M:%S',
-                        filemode='a')
-
-    # 定义一个Handler打印DEBUG及以上级别的日志到文件
-    console = logging.FileHandler(LOG_PATH + '/debug.log', encoding='utf-8')
-    console.setLevel(logging.INFO)
-    # 设置日志打印格式
-    formatter = logging.Formatter(
-        '%(asctime)s %(name)-6s %(levelname)-8s %(message)s')
-    console.setFormatter(formatter)
-    # 将定义好的console日志handler添加到root logger
-    logging.getLogger('').addHandler(console)
-
-
-def write_csv(file_name, user_data, mode):
-    if (len(user_data) == 0):
-        return
-    f = open(file_name, mode, encoding="utf-8", newline="")
-    csv_write = csv.writer(f)
-    csv_write.writerows(user_data)
-
-
-def read_csv(file_name):
-    data = []
-    if (os.path.exists(file_name)):
-        f = open(file_name, "r", encoding="utf-8")
-        csv_read = csv.reader(f)
-        for line in csv_read:
-            data.append(line)
-    return data
-
-def web_requests(url):
-    logging.info("requests: " + url)
-    try:
-        data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
-        return data.text
-    except:
-        logging.info("requests err: " + url)
-        return None
 
 """
 解析related playlists
@@ -207,6 +127,8 @@ def album_get_all_items(url):
     return items
 
 def album_cal_matching_rate(items):
+    if (len(items) == 0):
+        return 0
     # 本地id lists
     local_all = read_csv(favorites_path)
     local = []
@@ -241,7 +163,7 @@ def album_save_items(items):
 """
 抓取共享列表url中的video page
 """
-def get_video_page():
+def get_play_page():
     shared_playlists = get_shared_playlists()
     for playlist_url in shared_playlists:
 
@@ -258,7 +180,7 @@ def get_video_page():
 
 
 def main_app():
-    get_video_page()
+    get_play_page()
     get_dl_links()
 
 

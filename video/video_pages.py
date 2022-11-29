@@ -76,6 +76,7 @@ def album_cal_matching_rate(items):
         if item[0] in local:
             valid_len = valid_len + 1
     rate = round(valid_len * 100 / total_len)
+    logging.info("rate: " + str(rate) + "(" + str(valid_len) + "/" + str(total_len) + ")")
     return rate
 
 
@@ -107,7 +108,6 @@ def get_video_pages():
 
         # 分析该播放列表匹配度（根据favarite匹配）
         rate = album_cal_matching_rate(items)
-        logging.info(playlist_url + " rate: " + str(rate))
 
         # 保存播放列表（去重）/丢掉播放列表
         if (rate > 0):

@@ -42,23 +42,26 @@ def album_parse_html(data):
 def album_get_all_items(url):
     page = 1
     items = []
-    while (True):
-        # data = open("html/" + str(page) + ".html", "r", encoding="utf-8").read()
-        url = url + "/" + str(page)
-        data = web_requests(url)
-        if (data == None):
-            break
+    try:
+        while (True):
+            # data = open("html/" + str(page) + ".html", "r", encoding="utf-8").read()
+            url = url + "/" + str(page)
+            data = web_requests(url)
+            if (data == None):
+                break
 
-        items = items + album_parse_html(data)
+            items = items + album_parse_html(data)
 
-        # 判断是否是最后一页
-        soup = BeautifulSoup(data, "html.parser")
-        total_num = int(soup.find("div", class_="pagination-page-info").find_all("b")[1].contents[0])
-        cur_num = int(soup.find("div", class_="pagination-page-info").find_all("b")[0].contents[0].replace(" ", "").split("-")[1])
-        if (cur_num >= total_num):
-            break
-        else:
-            page = page + 1
+            # 判断是否是最后一页
+            soup = BeautifulSoup(data, "html.parser")
+            total_num = int(soup.find("div", class_="pagination-page-info").find_all("b")[1].contents[0])
+            cur_num = int(soup.find("div", class_="pagination-page-info").find_all("b")[0].contents[0].replace(" ", "").split("-")[1])
+            if (cur_num >= total_num):
+                break
+            else:
+                page = page + 1
+    except:
+        logging.info("album_get_all_items err")
     return items
 
 def album_cal_matching_rate(items):

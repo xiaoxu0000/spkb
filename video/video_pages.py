@@ -115,7 +115,7 @@ def get_video_pages():
         rate, valid_items = album_cal_matching_rate(items)
 
         # 保存播放列表（去重）/丢掉播放列表
-        if (rate >= 5):
+        if (rate >= 10):
             album_save_items(items)
 
 

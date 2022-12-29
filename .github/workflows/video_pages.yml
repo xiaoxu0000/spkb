@@ -12,7 +12,7 @@ name: Build video_pages
 
 on:
   schedule:
-    - cron: 0 1,13 * * *
+    - cron: 0 6,14,22 * * *
   repository_dispatch:
   workflow_dispatch:
     inputs:

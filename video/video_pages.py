@@ -66,7 +66,7 @@ def album_get_all_items(url):
 
 def album_cal_matching_rate(items):
     if (len(items) == 0):
-        return 0
+        return 0,[]
     # 本地id lists
     local_all = read_csv(favorites_path)
     local = []
@@ -115,7 +115,7 @@ def get_video_pages():
         rate, valid_items = album_cal_matching_rate(items)
 
         # 保存播放列表（去重）/丢掉播放列表
-        if (rate >= 5 or len(valid_items) >= 15):
+        if (rate >= 12):
             album_save_items(items)
 
 

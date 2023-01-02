@@ -12,6 +12,7 @@ spkb = "https://spankbang.com"
 video_pages_path = "video_pages.csv"    # 所有播放页面url
 related_album_path = "album.csv"        # 所有专辑
 favorites_path = "favorites.csv"        # 喜欢的id
+blacklist_path = "blacklist.csv"        # 黑名单
 
 
 """
@@ -81,9 +82,28 @@ def album_cal_matching_rate(items):
             valid_len = valid_len + 1
             valid_items.append(item[0])
     rate = round(valid_len * 100 / total_len)
-    logging.info("rate: " + str(rate) + "(" + str(valid_len) + "/" + str(total_len) + ")")
+    logging.info("favorite rate: " + str(rate) + "(" + str(valid_len) + "/" + str(total_len) + ")")
     return rate, valid_items
 
+def album_cal_blacklist_rate(items):
+    if (len(items) == 0):
+        return 0,[]
+    # 本地id lists
+    local_all = read_csv(blacklist_path)
+    local = []
+    for a in local_all:
+        local.append(a[0])
+
+    total_len = len(items)
+    valid_len = 0
+    valid_items = []
+    for item in items:
+        if item[0] in local:
+            valid_len = valid_len + 1
+            valid_items.append(item[0])
+    rate = round(valid_len * 100 / total_len)
+    logging.info("blacklist rate: " + str(rate) + "(" + str(valid_len) + "/" + str(total_len) + ")")
+    return rate, valid_items
 
 def album_save_items(items):
     # 读取本地items
@@ -113,9 +133,10 @@ def get_video_pages():
 
         # 分析该播放列表匹配度（根据favarite匹配）
         rate, valid_items = album_cal_matching_rate(items)
+        blackrate, valid_items = album_cal_blacklist_rate(items)
 
         # 保存播放列表（去重）/丢掉播放列表
-        if (rate >= 12):
+        if (rate >= 12 and blackrate <= 8):
             album_save_items(items)
 
 

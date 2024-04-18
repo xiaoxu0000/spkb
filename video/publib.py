@@ -6,6 +6,7 @@ import requests
 import logging
 import csv
 from fake_useragent import UserAgent
+import urllib.request
 
 requests.packages.urllib3.disable_warnings()
 
@@ -59,6 +60,17 @@ def web_requests(url):
     try:
         data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
         return data.text
+    except:
+        logging.info("requests err: " + url)
+        return None
+
+def url_requests(url):
+    logging.info("url requests: " + url)
+    try:
+        # data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
+        req = urllib.request.Request(url, headers=headers)
+        response = urllib.request.urlopen(req)
+        return response.read().decode('utf-8')
     except:
         logging.info("requests err: " + url)
         return None

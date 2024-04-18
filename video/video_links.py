@@ -64,7 +64,7 @@ def get_dl_links():
     new_info = []
     for info in local_web_lists:
         if info[0] not in exist_id:
-            data = web_requests(info[1])
+            data = url_requests(info[1])
             if (data == None):
                 continue
             parse_related_playlists(data) # 解析相关播报列表

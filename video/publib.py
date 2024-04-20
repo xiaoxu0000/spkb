@@ -55,16 +55,16 @@ def read_csv(file_name):
             data.append(line)
     return data
 
-def web_requests(url):
-    logging.info("requests: " + url)
-    try:
-        data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
-        return data.text
-    except:
-        logging.info("requests err: " + url)
-        return None
+# def web_requests(url):
+#     logging.info("requests: " + url)
+#     try:
+#         data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
+#         return data.text
+#     except:
+#         logging.info("requests err: " + url)
+#         return None
 
-def url_requests(url):
+def web_requests(url):
     logging.info("url requests: " + url)
     try:
         # data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)

@@ -31,13 +31,15 @@ def get_album_playlists():
 def album_parse_html(data):
     info = []
     soup = BeautifulSoup(data, "html.parser")
-    video_lists = soup.find("div", class_="video-list video-rotate video-list-with-ads").find_all("div", class_="video-item")
+    video_lists = soup.find_all("div", class_="video-item")
     for video_list in video_lists:
-        url_a = video_list.find("a", class_="n")
-        if (url_a != None):
-            url = spkb + url_a["href"]
-            id = video_list["data-id"]
-            info.append([id, url])
+        if ("data-group" in str(video_list)):
+            url_a = video_list.find("a", class_="thumb")
+            if (url_a != None):
+                url = spkb + url_a["href"]
+                id = video_list["data-id"]
+                info.append([id, url])
+                print(url)
     return info
 
 def album_get_all_items(url):

@@ -65,6 +65,7 @@ def album_get_all_items(url):
                 page = page + 1
     except:
         logging.info("album_get_all_items err")
+        logging.info(data)
     return items
 
 def album_cal_matching_rate(items):

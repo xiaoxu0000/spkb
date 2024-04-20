@@ -70,6 +70,7 @@ def web_requests(url):
         # data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
         req = urllib.request.Request(url, headers=headers)
         response = urllib.request.urlopen(req)
+        logging.info(f"code: {response.status}")
         return response.read().decode('utf-8')
     except:
         logging.info("requests err: " + url)

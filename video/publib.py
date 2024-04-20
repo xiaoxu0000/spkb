@@ -69,6 +69,7 @@ def web_requests(url):
     try:
         # data = requests.get(url, headers=headers, verify=False, allow_redirects=True, stream=True)
         req = urllib.request.Request(url, headers=headers)
+        logging.info("111")
         response = urllib.request.urlopen(req)
         logging.info(f"code: {response.status}")
         return response.read().decode('utf-8')
